@@ -1,22 +1,35 @@
 import { Input } from '@mui/base';
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-import ThreeDayWeahterForecast from '../components/ThreeDayWeahterForecast';
+import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import { Condition } from '../enums';
 import { getWeather } from '../mock/api/getWeather';
 
 export const WeatherPage = (): JSX.Element => {
-  const [cityNames, setCityNames] = useState<Array<string>>([]);
+  const [cityNames, setCityNames] = useState<string[]>([]);
   const [text, setText] = useState<string>('');
 
-  const handleAddcity = () => {
+  const handleAddCity = () => {
     if (text.trim() != '') {
       setCityNames([...cityNames, text]);
       setText('');
     }
   };
+
+  useEffect(() => {
+    const storedCityNames = localStorage.getItem('cityNames');
+    if (storedCityNames !== null) {
+      setCityNames(JSON.parse(storedCityNames));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cityNames !== undefined && cityNames.length >= 1) {
+      localStorage.setItem('cityNames', JSON.stringify(cityNames));
+    }
+  }, [cityNames]);
 
   return (
     <>
@@ -24,11 +37,12 @@ export const WeatherPage = (): JSX.Element => {
         <TextField
           placeholder="都市名"
           size="small"
+          value={text}
           onChange={(e) => setText(e.target.value)}
         />
         <Button
           variant="contained"
-          onClick={handleAddcity}
+          onClick={handleAddCity}
           sx={{ marginLeft: '8px' }}
         >
           追加
@@ -36,7 +50,7 @@ export const WeatherPage = (): JSX.Element => {
       </Box>
 
       {cityNames.map((cityName) => (
-        <ThreeDayWeahterForecast {...getWeather(cityName)} key={cityName} />
+        <ThreeDayWeatherForecast {...getWeather(cityName)} key={cityName} />
       ))}
     </>
   );
