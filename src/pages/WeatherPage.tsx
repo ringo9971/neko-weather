@@ -1,10 +1,11 @@
 import { Input } from '@mui/base';
+import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
 import { memo, useState } from 'react';
+
 import ThreeDayWeahterForecast from '../components/ThreeDayWeahterForecast';
 import { Condition } from '../enums';
 import { getWeather } from '../mock/api/getWeather';
-import { Button, TextField, Box } from '@mui/material';
 
 export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<Array<string>>([]);

@@ -1,6 +1,7 @@
 import React from 'react';
-import routes from './Routes';
 import { useRoutes } from 'react-router-dom';
+
+import routes from './Routes';
 
 function App() {
   const routing = useRoutes(routes);

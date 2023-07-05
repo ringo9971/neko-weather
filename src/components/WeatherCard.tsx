@@ -1,7 +1,8 @@
-import React from 'react';
-import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import React from 'react';
 import { memo } from 'react';
+
 import { Condition } from '../enums';
 
 export type Weather = {
