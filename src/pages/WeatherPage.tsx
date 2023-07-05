@@ -1,14 +1,42 @@
+import { Input } from '@mui/base';
 import React from 'react';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import ThreeDayWeahterForecast from '../components/ThreeDayWeahterForecast';
 import { Condition } from '../enums';
 import { getWeather } from '../mock/api/getWeather';
+import { Button, TextField, Box } from '@mui/material';
 
 export const WeatherPage = (): JSX.Element => {
+  const [cityNames, setCityNames] = useState<Array<string>>([]);
+  const [text, setText] = useState<string>('');
+
+  const handleAddcity = () => {
+    if (text.trim() != '') {
+      setCityNames([...cityNames, text]);
+      setText('');
+    }
+  };
+
   return (
     <>
-      <ThreeDayWeahterForecast {...getWeather('東京')} />
-      <ThreeDayWeahterForecast {...getWeather('神奈川')} />
+      <Box display="flex" alignItems="center" justifyContent="center" pt={1}>
+        <TextField
+          placeholder="都市名"
+          size="small"
+          onChange={(e) => setText(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          onClick={handleAddcity}
+          sx={{ marginLeft: '8px' }}
+        >
+          追加
+        </Button>
+      </Box>
+
+      {cityNames.map((cityName) => (
+        <ThreeDayWeahterForecast {...getWeather(cityName)} key={cityName} />
+      ))}
     </>
   );
 };
