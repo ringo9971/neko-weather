@@ -1,4 +1,3 @@
-import { Input } from '@mui/base';
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
 import { memo, useEffect, useState } from 'react';
@@ -7,7 +6,6 @@ import Modal from 'react-modal';
 
 import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
-import { Condition } from '../enums';
 import { getWeather } from '../mock/api/getWeather';
 
 const customStyles = {
