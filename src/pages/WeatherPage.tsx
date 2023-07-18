@@ -2,14 +2,35 @@ import { Input } from '@mui/base';
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
 import { memo, useEffect, useState } from 'react';
+import Konami from 'react-konami-code';
+import Modal from 'react-modal';
 
 import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
+import InvaderGame from '../components/invadergame/InvaderGame';
 import { Condition } from '../enums';
 import { getWeather } from '../mock/api/getWeather';
+
+const customStyles = {
+  content: {
+    top: '10%',
+    left: '10%',
+    right: '10%',
+    bottom: '10%',
+  },
+};
 
 export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [text, setText] = useState<string>('');
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
+  const easterEgg = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   const handleAddCity = () => {
     if (text.trim() != '') {
@@ -48,6 +69,15 @@ export const WeatherPage = (): JSX.Element => {
           追加
         </Button>
       </Box>
+
+      <Konami action={easterEgg} timeout={50}></Konami>
+      <Modal
+        isOpen={modalIsOpen}
+        style={customStyles}
+        onRequestClose={closeModal}
+      >
+        <InvaderGame />
+      </Modal>
 
       {cityNames.map((cityName) => (
         <ThreeDayWeatherForecast {...getWeather(cityName)} key={cityName} />
