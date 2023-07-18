@@ -14,7 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "react-modal": ["./node_modules/react-modal/lib/index.d.ts"]
+    }
   },
   "include": ["src"]
 }
