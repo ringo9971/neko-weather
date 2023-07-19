@@ -21,6 +21,10 @@ export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [text, setText] = useState<string>('');
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalDimensions, setModalDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -50,6 +54,16 @@ export const WeatherPage = (): JSX.Element => {
     }
   }, [cityNames]);
 
+  useEffect(() => {
+    const modalElement = document.querySelector('.ReactModal__Content');
+    if (modalElement) {
+      setModalDimensions({
+        width: modalElement.clientWidth,
+        height: modalElement.clientHeight,
+      });
+    }
+  });
+
   return (
     <>
       <Box display="flex" alignItems="center" justifyContent="center" pt={1}>
@@ -74,7 +88,7 @@ export const WeatherPage = (): JSX.Element => {
         style={customStyles}
         onRequestClose={closeModal}
       >
-        <InvaderGame />
+        <InvaderGame modalDimensions={modalDimensions} />
       </Modal>
 
       {cityNames.map((cityName) => (
