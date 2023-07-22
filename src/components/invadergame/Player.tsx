@@ -19,14 +19,14 @@ const Player = (props: PlayerProps): JSX.Element => {
     const handleKeyPress = (event: KeyboardEvent) => {
       event.preventDefault();
 
-      if (event.keyCode === 37 && position.x - props.speed >= 0) {
+      if (event.keyCode === 37 && position.x - props.speed > 0) {
         setPosition((prevPos) => ({
           ...prevPos,
           x: prevPos.x - props.speed,
         }));
       } else if (
         event.keyCode === 39 &&
-        position.x + props.speed <= props.cellGrid.grid.x - props.size.x
+        position.x + props.speed < props.cellGrid.grid.x - props.size.x
       ) {
         setPosition((prevPos) => ({
           ...prevPos,
