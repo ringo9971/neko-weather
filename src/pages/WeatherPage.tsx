@@ -25,6 +25,7 @@ export const WeatherPage = (): JSX.Element => {
     width: 0,
     height: 0,
   });
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -35,9 +36,15 @@ export const WeatherPage = (): JSX.Element => {
   };
 
   const handleAddCity = () => {
-    if (text.trim() != '') {
+    if (text.trim() === '') {
+      return;
+    }
+    if (cityNames.every((cityName) => cityName !== text)) {
       setCityNames([...cityNames, text]);
       setText('');
+      setErrorMessage('');
+    } else {
+      setErrorMessage(`「${text}」は登録されています。`);
     }
   };
 
@@ -73,7 +80,12 @@ export const WeatherPage = (): JSX.Element => {
 
   return (
     <>
-      <Box display="flex" alignItems="center" justifyContent="center" pt={1}>
+      <Box
+        display="flex"
+        alignItems="flex-start"
+        justifyContent="center"
+        pt={1}
+      >
         <TextField
           placeholder="都市名"
           size="small"
@@ -84,6 +96,8 @@ export const WeatherPage = (): JSX.Element => {
               handleAddCity();
             }
           }}
+          error={!!errorMessage}
+          helperText={errorMessage !== '' ? errorMessage : ' '}
         />
         <Button
           variant="contained"
