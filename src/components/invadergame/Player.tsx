@@ -28,19 +28,6 @@ const Player = ({ cx, cy }: { cx: number; cy: number }): JSX.Element => {
           ...prevPos,
           x: prevPos.x + moveAmount,
         }));
-      } else if (event.keyCode === 38 && position.y - moveAmount >= 0) {
-        setPosition((prevPos) => ({
-          ...prevPos,
-          y: prevPos.y - moveAmount,
-        }));
-      } else if (
-        event.keyCode === 40 &&
-        position.y + moveAmount <= grid.y - size.y
-      ) {
-        setPosition((prevPos) => ({
-          ...prevPos,
-          y: prevPos.y + moveAmount,
-        }));
       }
     };
 
