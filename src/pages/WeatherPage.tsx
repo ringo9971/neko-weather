@@ -41,6 +41,16 @@ export const WeatherPage = (): JSX.Element => {
     }
   };
 
+  const updateModalDimensions = () => {
+    const modalElement = document.querySelector('.ReactModal__Content');
+    if (modalElement) {
+      setModalDimensions({
+        width: modalElement.clientWidth,
+        height: modalElement.clientHeight,
+      });
+    }
+  };
+
   useEffect(() => {
     const storedCityNames = localStorage.getItem('cityNames');
     if (storedCityNames !== null) {
@@ -53,16 +63,6 @@ export const WeatherPage = (): JSX.Element => {
       localStorage.setItem('cityNames', JSON.stringify(cityNames));
     }
   }, [cityNames]);
-
-  useEffect(() => {
-    const modalElement = document.querySelector('.ReactModal__Content');
-    if (modalElement) {
-      setModalDimensions({
-        width: modalElement.clientWidth,
-        height: modalElement.clientHeight,
-      });
-    }
-  });
 
   return (
     <>
@@ -87,6 +87,7 @@ export const WeatherPage = (): JSX.Element => {
         isOpen={modalIsOpen}
         style={customStyles}
         onRequestClose={closeModal}
+        onAfterOpen={updateModalDimensions}
       >
         <InvaderGame modalDimensions={modalDimensions} />
       </Modal>
