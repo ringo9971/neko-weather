@@ -2,17 +2,23 @@ import React from 'react';
 import { memo } from 'react';
 
 import Invader from './Invader';
+import { CellGrid } from './InvaderGame';
 
 export interface InvaderModel {
   id: number;
-  x: number;
-  y: number;
+  pos: {
+    x: number;
+    y: number;
+  };
+  size: {
+    x: number;
+    y: number;
+  };
 }
 
 interface InvadersProps {
   invaders: InvaderModel[];
-  cx: number;
-  cy: number;
+  cellGrid: CellGrid;
 }
 
 const Invaders = (props: InvadersProps): JSX.Element => {
@@ -21,10 +27,9 @@ const Invaders = (props: InvadersProps): JSX.Element => {
       {props.invaders.map((invader: InvaderModel) => (
         <Invader
           key={invader.id}
-          x={invader.x}
-          y={invader.y}
-          cx={props.cx}
-          cy={props.cy}
+          pos={invader.pos}
+          size={invader.size}
+          cellGrid={props.cellGrid}
         />
       ))}
     </>

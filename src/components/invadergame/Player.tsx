@@ -1,32 +1,36 @@
 import React from 'react';
 import { memo, useEffect, useState } from 'react';
 
-import { InvaderGameProps } from './InvaderGame';
+import { CellGrid } from './InvaderGame';
 
-const Player = ({ cx, cy }: { cx: number; cy: number }): JSX.Element => {
+interface PlayerProps {
+  size: {
+    x: number;
+    y: number;
+  };
+  speed: number;
+  cellGrid: CellGrid;
+}
+
+const Player = (props: PlayerProps): JSX.Element => {
   const [position, setPosition] = useState({ x: 50, y: 90 });
-
-  const grid = { x: 100, y: 100 };
-  const size = { x: 5, y: 5 };
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      const moveAmount = 1;
-
       event.preventDefault();
 
-      if (event.keyCode === 37 && position.x - moveAmount >= 0) {
+      if (event.keyCode === 37 && position.x - props.speed >= 0) {
         setPosition((prevPos) => ({
           ...prevPos,
-          x: prevPos.x - moveAmount,
+          x: prevPos.x - props.speed,
         }));
       } else if (
         event.keyCode === 39 &&
-        position.x + moveAmount <= grid.x - size.x
+        position.x + props.speed <= props.cellGrid.grid.x - props.size.x
       ) {
         setPosition((prevPos) => ({
           ...prevPos,
-          x: prevPos.x + moveAmount,
+          x: prevPos.x + props.speed,
         }));
       }
     };
@@ -44,10 +48,10 @@ const Player = ({ cx, cy }: { cx: number; cy: number }): JSX.Element => {
       alt="Cat"
       style={{
         position: 'absolute',
-        left: position.x * cx,
-        top: position.y * cy,
-        width: size.x * cx,
-        height: size.y * cy,
+        left: position.x * props.cellGrid.cellSize.x,
+        top: position.y * props.cellGrid.cellSize.y,
+        width: props.size.x * props.cellGrid.cellSize.x,
+        height: props.size.y * props.cellGrid.cellSize.y,
       }}
     />
   );

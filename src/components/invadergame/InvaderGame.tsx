@@ -4,15 +4,26 @@ import { memo, useEffect, useState } from 'react';
 import Invaders from './Invaders';
 import Player from './Player';
 
-export interface InvaderGameProps {
+interface InvaderGameProps {
   modalDimensions: {
     width: number;
     height: number;
   };
 }
 
+export interface CellGrid {
+  grid: {
+    x: number;
+    y: number;
+  };
+  cellSize: {
+    x: number;
+    y: number;
+  };
+}
+
 const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
-  const [cellSize, setCellSize] = useState({ cx: 1, cy: 1 });
+  const [cellSize, setCellSize] = useState({ x: 1, y: 1 });
 
   const grid = { x: 100, y: 100 };
 
@@ -22,21 +33,21 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
       const id = i * 11 + j;
       const x = 25 + j * 5;
       const y = 10 + i * 10;
-      invaders.push({ id, x, y });
+      invaders.push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
     }
   }
 
   useEffect(() => {
     setCellSize({
-      cx: modalDimensions.width / grid.x,
-      cy: modalDimensions.height / grid.y,
+      x: modalDimensions.width / grid.x,
+      y: modalDimensions.height / grid.y,
     });
   }, [modalDimensions]);
 
   return (
     <>
-      <Player {...cellSize} />
-      <Invaders {...cellSize} invaders={invaders} />
+      <Player size={{ x: 5, y: 5 }} speed={1} cellGrid={{ grid, cellSize }} />
+      <Invaders invaders={invaders} cellGrid={{ grid, cellSize }} />
     </>
   );
 };
