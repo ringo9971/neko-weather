@@ -79,6 +79,11 @@ export const WeatherPage = (): JSX.Element => {
           size="small"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              handleAddCity();
+            }
+          }}
         />
         <Button
           variant="contained"
