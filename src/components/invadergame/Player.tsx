@@ -3,19 +3,11 @@ import { memo, useEffect, useState } from 'react';
 
 import { InvaderGameProps } from './InvaderGame';
 
-const Player = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [cellSize, setCellSize] = useState({ x: 1, y: 1 });
+const Player = ({ cx, cy }: { cx: number; cy: number }): JSX.Element => {
+  const [position, setPosition] = useState({ x: 50, y: 90 });
 
   const grid = { x: 100, y: 100 };
   const size = { x: 5, y: 5 };
-
-  useEffect(() => {
-    setCellSize({
-      x: modalDimensions.width / grid.x,
-      y: modalDimensions.height / grid.y,
-    });
-  }, [modalDimensions]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -57,7 +49,7 @@ const Player = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [position, modalDimensions]);
+  }, [position]);
 
   return (
     <img
@@ -65,10 +57,10 @@ const Player = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
       alt="Cat"
       style={{
         position: 'absolute',
-        left: position.x * cellSize.x,
-        top: position.y * cellSize.y,
-        width: size.x * cellSize.x,
-        height: size.y * cellSize.y,
+        left: position.x * cx,
+        top: position.y * cy,
+        width: size.x * cx,
+        height: size.y * cy,
       }}
     />
   );
