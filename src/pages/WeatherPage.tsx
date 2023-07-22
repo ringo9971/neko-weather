@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
@@ -63,6 +63,13 @@ export const WeatherPage = (): JSX.Element => {
       localStorage.setItem('cityNames', JSON.stringify(cityNames));
     }
   }, [cityNames]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updateModalDimensions);
+    return () => {
+      window.removeEventListener('resize', updateModalDimensions);
+    };
+  });
 
   return (
     <>
