@@ -78,7 +78,7 @@ export const WeatherPage = (): JSX.Element => {
     return () => {
       window.removeEventListener('resize', updateModalDimensions);
     };
-  });
+  }, []);
 
   return (
     <>
