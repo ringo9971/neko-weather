@@ -1,9 +1,21 @@
 import React from 'react';
-import { memo, useContext, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  memo,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { InvaderGameContext } from '../../lib/contexts';
 
 interface PlayerProps {
+  pos: {
+    x: number;
+    y: number;
+  };
+  setPos: Dispatch<SetStateAction<{ x: number; y: number }>>;
   size: {
     x: number;
     y: number;
@@ -12,23 +24,22 @@ interface PlayerProps {
 }
 
 const Player = (props: PlayerProps): JSX.Element => {
-  const [position, setPosition] = useState({ x: 50, y: 90 });
   const { cellSize, grid } = useContext(InvaderGameContext);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       event.preventDefault();
 
-      if (event.keyCode === 37 && position.x - props.speed > 0) {
-        setPosition((prevPos) => ({
+      if (event.keyCode === 37 && props.pos.x - props.speed > 0) {
+        props.setPos((prevPos) => ({
           ...prevPos,
           x: prevPos.x - props.speed,
         }));
       } else if (
         event.keyCode === 39 &&
-        position.x + props.speed < grid.x - props.size.x
+        props.pos.x + props.speed < grid.x - props.size.x
       ) {
-        setPosition((prevPos) => ({
+        props.setPos((prevPos) => ({
           ...prevPos,
           x: prevPos.x + props.speed,
         }));
@@ -40,7 +51,7 @@ const Player = (props: PlayerProps): JSX.Element => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [position]);
+  }, [props.pos]);
 
   return (
     <img
@@ -48,8 +59,8 @@ const Player = (props: PlayerProps): JSX.Element => {
       alt="Cat"
       style={{
         position: 'absolute',
-        left: position.x * cellSize.x,
-        top: position.y * cellSize.y,
+        left: props.pos.x * cellSize.x,
+        top: props.pos.y * cellSize.y,
         width: props.size.x * cellSize.x,
         height: props.size.y * cellSize.y,
       }}

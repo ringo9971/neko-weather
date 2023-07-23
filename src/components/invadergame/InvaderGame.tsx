@@ -25,6 +25,7 @@ export interface CellGrid {
 
 const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   const [cellSize, setCellSize] = useState({ x: 1, y: 1 });
+  const [playerPos, setPlayerPos] = useState({ x: 50, y: 90 });
 
   const grid = { x: 100, y: 100 };
 
@@ -47,7 +48,12 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
 
   return (
     <InvaderGameContext.Provider value={{ cellSize, grid }}>
-      <Player size={{ x: 5, y: 5 }} speed={1} />
+      <Player
+        pos={playerPos}
+        setPos={setPlayerPos}
+        size={{ x: 5, y: 5 }}
+        speed={1}
+      />
       <Invaders invaders={invaders} />
     </InvaderGameContext.Provider>
   );
