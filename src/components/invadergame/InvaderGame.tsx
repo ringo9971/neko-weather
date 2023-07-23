@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { InvaderGameContext } from '../../lib/contexts';
 import Invaders from './Invaders';
 import Player from './Player';
+import PlayerBullet from './PlayerBullet';
 
 interface InvaderGameProps {
   modalDimensions: {
@@ -26,8 +27,14 @@ export interface CellGrid {
 const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   const [cellSize, setCellSize] = useState({ x: 1, y: 1 });
   const [playerPos, setPlayerPos] = useState({ x: 50, y: 90 });
+  const [playerBulletPos, setPlayerBulletPos] = useState({ x: -100, y: -100 });
+  const [playerBulletIsFiring, setPlayerBulletIsFiring] = useState(false);
 
   const grid = { x: 100, y: 100 };
+  const playerSize = {
+    x: 5,
+    y: 5,
+  };
 
   const invaders = [];
   for (let i = 0; i < 4; i++) {
@@ -38,6 +45,15 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
       invaders.push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
     }
   }
+
+  useEffect(() => {
+    if (playerBulletIsFiring) {
+      setPlayerBulletPos({
+        x: playerPos.x + playerSize.x / 2,
+        y: playerPos.y - playerSize.y / 2,
+      });
+    }
+  }, [playerBulletIsFiring]);
 
   useEffect(() => {
     setCellSize({
@@ -51,8 +67,15 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
       <Player
         pos={playerPos}
         setPos={setPlayerPos}
-        size={{ x: 5, y: 5 }}
+        size={playerSize}
         speed={1}
+      />
+      <PlayerBullet
+        pos={playerBulletPos}
+        setPos={setPlayerBulletPos}
+        size={{ x: 0.3, y: 3 }}
+        isFiring={playerBulletIsFiring}
+        setIsFiring={setPlayerBulletIsFiring}
       />
       <Invaders invaders={invaders} />
     </InvaderGameContext.Provider>
