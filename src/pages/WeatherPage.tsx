@@ -30,6 +30,18 @@ export const WeatherPage = (): JSX.Element => {
   const [catMayoIsVisible, setCatMayoIsVisible] = useState(false);
   const [catMayoPos, setCatMayoPos] = useState(0);
   const [catMayo, setCatMayo] = useState('/cat_mayo1.png');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -169,15 +181,15 @@ export const WeatherPage = (): JSX.Element => {
               src={catMayo}
               style={{
                 maxWidth: '100%',
-                height: 'auto',
+                height: '100%',
                 transform: catMayoPos < 90 ? 'scaleX(1)' : 'scaleX(-1)',
               }}
             />
           }
           style={{
             position: 'fixed',
-            width: '10%',
-            height: '10%',
+            width: `${windowWidth / 10}px`,
+            height: `${windowWidth / 10}px`,
             bottom: '0%',
             right: `${catMayoPos < 90 ? catMayoPos : 180 - catMayoPos}%`,
           }}
