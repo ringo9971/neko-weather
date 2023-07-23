@@ -14,6 +14,7 @@ const customStyles = {
     left: '10%',
     right: '10%',
     bottom: '10%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
 };
 
