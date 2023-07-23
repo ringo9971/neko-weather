@@ -4,6 +4,7 @@ import { memo, useEffect, useLayoutEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
+import CatMayo from '../components/CatMayo';
 import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
 import { getWeather } from '../mock/api/getWeather';
@@ -27,21 +28,6 @@ export const WeatherPage = (): JSX.Element => {
     height: 0,
   });
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [catMayoIsVisible, setCatMayoIsVisible] = useState(false);
-  const [catMayoPos, setCatMayoPos] = useState(0);
-  const [catMayo, setCatMayo] = useState('/cat_mayo1.png');
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -73,48 +59,6 @@ export const WeatherPage = (): JSX.Element => {
       });
     }
   };
-
-  const scrollToTop = () => {
-    setCatMayo('/cat_mayo2.png');
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
-
-  const handleScroll = () => {
-    if (window.scrollY > 200) {
-      setCatMayoIsVisible(true);
-    } else {
-      setCatMayo('/cat_mayo1.png');
-      setCatMayoIsVisible(false);
-    }
-  };
-
-  const update = () => {
-    setCatMayoPos((prePos) => (prePos + 1) % 180);
-  };
-
-  useEffect(() => {
-    if (catMayoIsVisible) {
-      setCatMayoPos(0);
-    }
-  }, [catMayoIsVisible]);
-
-  useEffect(() => {
-    const timer = setInterval(update, 100);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [window.scrollY]);
 
   useEffect(() => {
     const storedCityNames = localStorage.getItem('cityNames');
@@ -180,30 +124,7 @@ export const WeatherPage = (): JSX.Element => {
         <ThreeDayWeatherForecast {...getWeather(cityName)} key={cityName} />
       ))}
 
-      {catMayoIsVisible ? (
-        <Button
-          onClick={scrollToTop}
-          startIcon={
-            <img
-              src={catMayo}
-              style={{
-                maxWidth: '100%',
-                height: '100%',
-                transform: catMayoPos < 90 ? 'scaleX(1)' : 'scaleX(-1)',
-              }}
-            />
-          }
-          style={{
-            position: 'fixed',
-            width: `${windowWidth / 10}px`,
-            height: `${windowWidth / 10}px`,
-            bottom: '0%',
-            right: `${catMayoPos < 90 ? catMayoPos : 180 - catMayoPos}%`,
-          }}
-        />
-      ) : (
-        <></>
-      )}
+      <CatMayo />
     </>
   );
 };
