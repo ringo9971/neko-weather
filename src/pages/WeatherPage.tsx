@@ -91,15 +91,22 @@ export const WeatherPage = (): JSX.Element => {
     }
   };
 
-  useEffect(() => {
+  const update = () => {
     setCatMayoPos((prePos) => (prePos + 1) % 180);
-  });
+  };
 
   useEffect(() => {
     if (catMayoIsVisible) {
       setCatMayoPos(0);
     }
   }, [catMayoIsVisible]);
+
+  useEffect(() => {
+    const timer = setInterval(update, 100);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
