@@ -1,7 +1,7 @@
 import React from 'react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 
-import { CellGrid } from './InvaderGame';
+import { InvaderGameContext } from '../../lib/contexts';
 
 interface PlayerProps {
   size: {
@@ -9,11 +9,11 @@ interface PlayerProps {
     y: number;
   };
   speed: number;
-  cellGrid: CellGrid;
 }
 
 const Player = (props: PlayerProps): JSX.Element => {
   const [position, setPosition] = useState({ x: 50, y: 90 });
+  const { cellSize, grid } = useContext(InvaderGameContext);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -26,7 +26,7 @@ const Player = (props: PlayerProps): JSX.Element => {
         }));
       } else if (
         event.keyCode === 39 &&
-        position.x + props.speed < props.cellGrid.grid.x - props.size.x
+        position.x + props.speed < grid.x - props.size.x
       ) {
         setPosition((prevPos) => ({
           ...prevPos,
@@ -48,10 +48,10 @@ const Player = (props: PlayerProps): JSX.Element => {
       alt="Cat"
       style={{
         position: 'absolute',
-        left: position.x * props.cellGrid.cellSize.x,
-        top: position.y * props.cellGrid.cellSize.y,
-        width: props.size.x * props.cellGrid.cellSize.x,
-        height: props.size.y * props.cellGrid.cellSize.y,
+        left: position.x * cellSize.x,
+        top: position.y * cellSize.y,
+        width: props.size.x * cellSize.x,
+        height: props.size.y * cellSize.y,
       }}
     />
   );

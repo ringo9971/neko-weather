@@ -1,7 +1,7 @@
 import React from 'react';
-import { memo, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 
-import { CellGrid } from './InvaderGame';
+import { InvaderGameContext } from '../../lib/contexts';
 
 interface InvaderProps {
   pos: {
@@ -12,11 +12,10 @@ interface InvaderProps {
     x: number;
     y: number;
   };
-  cellGrid: CellGrid;
 }
 
 const Invader = (props: InvaderProps): JSX.Element => {
-  const [position, setPosition] = useState({ x: props.pos.x, y: props.pos.y });
+  const { cellSize } = useContext(InvaderGameContext);
 
   return (
     <img
@@ -24,10 +23,10 @@ const Invader = (props: InvaderProps): JSX.Element => {
       alt="kaminari"
       style={{
         position: 'absolute',
-        left: position.x * props.cellGrid.cellSize.x,
-        top: position.y * props.cellGrid.cellSize.y,
-        width: props.size.x * props.cellGrid.cellSize.x,
-        height: props.size.y * props.cellGrid.cellSize.y,
+        left: props.pos.x * cellSize.x,
+        top: props.pos.y * cellSize.y,
+        width: props.size.x * cellSize.x,
+        height: props.size.y * cellSize.y,
       }}
     />
   );

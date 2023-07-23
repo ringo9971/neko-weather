@@ -1,6 +1,7 @@
 import React from 'react';
 import { memo, useEffect, useState } from 'react';
 
+import { InvaderGameContext } from '../../lib/contexts';
 import Invaders from './Invaders';
 import Player from './Player';
 
@@ -45,10 +46,10 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   }, [modalDimensions]);
 
   return (
-    <>
-      <Player size={{ x: 5, y: 5 }} speed={1} cellGrid={{ grid, cellSize }} />
-      <Invaders invaders={invaders} cellGrid={{ grid, cellSize }} />
-    </>
+    <InvaderGameContext.Provider value={{ cellSize, grid }}>
+      <Player size={{ x: 5, y: 5 }} speed={1} />
+      <Invaders invaders={invaders} />
+    </InvaderGameContext.Provider>
   );
 };
 
