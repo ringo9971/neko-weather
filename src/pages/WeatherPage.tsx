@@ -4,10 +4,10 @@ import { memo, useEffect, useLayoutEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
+import { getWeather } from '../api/mock/getWeather';
 import CatMayo from '../components/CatMayo';
 import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
-import { getWeather } from '../mock/api/getWeather';
 
 const customStyles = {
   content: {
