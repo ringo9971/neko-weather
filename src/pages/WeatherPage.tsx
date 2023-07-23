@@ -27,6 +27,9 @@ export const WeatherPage = (): JSX.Element => {
     height: 0,
   });
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [catMayoIsVisible, setCatMayoIsVisible] = useState(false);
+  const [catMayoPos, setCatMayoPos] = useState(0);
+  const [catMayo, setCatMayo] = useState('/cat_mayo1.png');
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -58,6 +61,41 @@ export const WeatherPage = (): JSX.Element => {
       });
     }
   };
+
+  const scrollToTop = () => {
+    setCatMayo('/cat_mayo2.png');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleScroll = () => {
+    if (window.scrollY > 200) {
+      setCatMayoIsVisible(true);
+    } else {
+      setCatMayo('/cat_mayo1.png');
+      setCatMayoIsVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    setCatMayoPos((prePos) => (prePos + 1) % 180);
+  });
+
+  useEffect(() => {
+    if (catMayoIsVisible) {
+      setCatMayoPos(0);
+    }
+  }, [catMayoIsVisible]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [window.scrollY]);
 
   useEffect(() => {
     const storedCityNames = localStorage.getItem('cityNames');
@@ -122,6 +160,24 @@ export const WeatherPage = (): JSX.Element => {
       {cityNames.map((cityName) => (
         <ThreeDayWeatherForecast {...getWeather(cityName)} key={cityName} />
       ))}
+
+      {catMayoIsVisible ? (
+        <Button
+          onClick={scrollToTop}
+          startIcon={
+            <img src={catMayo} style={{ maxWidth: '100%', height: 'auto' }} />
+          }
+          style={{
+            position: 'fixed',
+            width: '10%',
+            height: '10%',
+            bottom: '0%',
+            right: `${catMayoPos < 90 ? catMayoPos : 180 - catMayoPos}%`,
+          }}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };
