@@ -165,7 +165,14 @@ export const WeatherPage = (): JSX.Element => {
         <Button
           onClick={scrollToTop}
           startIcon={
-            <img src={catMayo} style={{ maxWidth: '100%', height: 'auto' }} />
+            <img
+              src={catMayo}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                transform: catMayoPos < 90 ? 'scaleX(1)' : 'scaleX(-1)',
+              }}
+            />
           }
           style={{
             position: 'fixed',
