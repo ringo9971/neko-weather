@@ -3,6 +3,7 @@ import { memo, useEffect, useState } from 'react';
 
 import { InvaderGameContext } from '../../lib/contexts';
 import Invaders from './Invaders';
+import { InvaderModel } from './Invaders';
 import Player from './Player';
 import PlayerBullet from './PlayerBullet';
 
@@ -29,22 +30,48 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   const [playerPos, setPlayerPos] = useState({ x: 50, y: 90 });
   const [playerBulletPos, setPlayerBulletPos] = useState({ x: -100, y: -100 });
   const [playerBulletIsFiring, setPlayerBulletIsFiring] = useState(false);
+  const [invaders, setInvaders] = useState<InvaderModel[]>([]);
 
   const grid = { x: 100, y: 100 };
   const playerSize = {
     x: 5,
     y: 5,
   };
+  const playerBulletSize = {
+    x: 0.3,
+    y: 3,
+  };
 
-  const invaders = [];
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 11; j++) {
-      const id = i * 11 + j;
-      const x = 25 + j * 5;
-      const y = 10 + i * 10;
-      invaders.push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
+  useEffect(() => {
+    const initialInvaders = [];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 11; j++) {
+        const id = i * 11 + j;
+        const x = 25 + j * 5;
+        const y = 10 + i * 10;
+        initialInvaders.push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
+      }
     }
-  }
+    setInvaders(initialInvaders);
+  }, []);
+
+  useEffect(() => {
+    const filteredInvaders = invaders.filter((invader) => {
+      const x =
+        playerBulletPos.x + playerBulletSize.x < invader.pos.x ||
+        invader.pos.x + invader.size.x <= playerBulletPos.x;
+      const y =
+        playerBulletPos.y + playerBulletSize.y < invader.pos.y ||
+        invader.pos.y + invader.size.y < playerBulletPos.y;
+      return x || y;
+    });
+
+    if (filteredInvaders.length !== invaders.length) {
+      setPlayerBulletIsFiring(false);
+      setPlayerBulletPos({ x: -100, y: -100 });
+      setInvaders(filteredInvaders);
+    }
+  }, [playerBulletPos]);
 
   useEffect(() => {
     if (playerBulletIsFiring) {
@@ -73,7 +100,7 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
       <PlayerBullet
         pos={playerBulletPos}
         setPos={setPlayerBulletPos}
-        size={{ x: 0.3, y: 3 }}
+        size={playerBulletSize}
         isFiring={playerBulletIsFiring}
         setIsFiring={setPlayerBulletIsFiring}
       />
