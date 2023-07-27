@@ -1,5 +1,5 @@
 import React from 'react';
-import { memo, useContext, useState } from 'react';
+import { memo, useContext } from 'react';
 
 import { InvaderGameContext } from '../../lib/contexts';
 
