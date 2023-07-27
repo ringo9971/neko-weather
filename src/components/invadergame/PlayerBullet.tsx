@@ -33,7 +33,7 @@ const PlayerBullet = (props: PlayerBulletProps): JSX.Element => {
     if (props.isFiring) {
       props.setPos((prevPos) => ({
         ...prevPos,
-        y: prevPos.y - 1,
+        y: prevPos.y - 2,
       }));
       if (props.pos.y < -props.size.y) {
         props.setIsFiring(false);
