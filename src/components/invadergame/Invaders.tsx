@@ -16,15 +16,17 @@ export interface InvaderModel {
 }
 
 interface InvadersProps {
-  invaders: InvaderModel[];
+  invaders: InvaderModel[][];
 }
 
 const Invaders = (props: InvadersProps): JSX.Element => {
   return (
     <>
-      {props.invaders.map((invader: InvaderModel) => (
-        <Invader key={invader.id} pos={invader.pos} size={invader.size} />
-      ))}
+      {props.invaders.map((columns: InvaderModel[]) =>
+        columns.map((invader: InvaderModel) => (
+          <Invader key={invader.id} pos={invader.pos} size={invader.size} />
+        ))
+      )}
     </>
   );
 };

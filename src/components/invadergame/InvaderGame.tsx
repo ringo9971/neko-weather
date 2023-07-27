@@ -30,7 +30,7 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   const [playerPos, setPlayerPos] = useState({ x: 50, y: 90 });
   const [playerBulletPos, setPlayerBulletPos] = useState({ x: -100, y: -100 });
   const [playerBulletIsFiring, setPlayerBulletIsFiring] = useState(false);
-  const [invaders, setInvaders] = useState<InvaderModel[]>([]);
+  const [invaders, setInvaders] = useState<InvaderModel[][]>([]);
 
   const grid = { x: 100, y: 100 };
   const playerSize = {
@@ -44,32 +44,62 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
 
   useEffect(() => {
     const initialInvaders = [];
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 11; j++) {
-        const id = i * 11 + j;
-        const x = 25 + j * 5;
-        const y = 10 + i * 10;
-        initialInvaders.push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
+    for (let i = 0; i < 11; i++) {
+      initialInvaders.push([] as InvaderModel[]);
+      for (let j = 0; j < 4; j++) {
+        const id = j * 11 + i;
+        const x = 25 + i * 5;
+        const y = 10 + j * 10;
+        initialInvaders[i].push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
       }
     }
     setInvaders(initialInvaders);
   }, []);
 
+  const isCollision = ({
+    rectPos,
+    rectSize,
+    rect2Pos,
+    rect2Size,
+  }: {
+    rectPos: { x: number; y: number };
+    rectSize: { x: number; y: number };
+    rect2Pos: { x: number; y: number };
+    rect2Size: { x: number; y: number };
+  }) => {
+    return (
+      rect2Pos.x <= rectPos.x + rectSize.x &&
+      rectPos.x <= rect2Pos.x + rect2Size.x &&
+      rect2Pos.y <= rectPos.y + rectSize.y &&
+      rectPos.y <= rect2Pos.y + rect2Size.y
+    );
+  };
+
   useEffect(() => {
-    const filteredInvaders = invaders.filter((invader) => {
-      const x =
-        playerBulletPos.x + playerBulletSize.x < invader.pos.x ||
-        invader.pos.x + invader.size.x <= playerBulletPos.x;
-      const y =
-        playerBulletPos.y + playerBulletSize.y < invader.pos.y ||
-        invader.pos.y + invader.size.y < playerBulletPos.y;
-      return x || y;
+    if (playerBulletPos.x < 0) {
+      return;
+    }
+    const updatedInvaders = invaders.map((column) => {
+      const columns = column.map((invader) => {
+        if (
+          isCollision({
+            rectPos: playerBulletPos,
+            rectSize: playerBulletSize,
+            rect2Pos: invader.pos,
+            rect2Size: invader.size,
+          })
+        ) {
+          return null;
+        }
+        return invader;
+      });
+      return columns.filter((invader) => invader !== null) as InvaderModel[];
     });
 
-    if (filteredInvaders.length !== invaders.length) {
+    if (JSON.stringify(updatedInvaders) !== JSON.stringify(invaders)) {
       setPlayerBulletIsFiring(false);
       setPlayerBulletPos({ x: -100, y: -100 });
-      setInvaders(filteredInvaders);
+      setInvaders(updatedInvaders);
     }
   }, [playerBulletPos]);
 
