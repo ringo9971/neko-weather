@@ -1,8 +1,10 @@
 import React from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Direction } from '../../enums';
 import { InvaderGameContext } from '../../lib/contexts';
+import InvaderBullets, { InvaderBulletModel } from './InvaderBullets';
 import Invaders from './Invaders';
 import { InvaderModel } from './Invaders';
 import Player from './Player';
@@ -38,6 +40,9 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
   const [playerBulletPos, setPlayerBulletPos] = useState({ x: -100, y: -100 });
   const [playerBulletIsFiring, setPlayerBulletIsFiring] = useState(false);
   const [invaders, setInvaders] = useState<InvaderModel[][]>([]);
+  const [invaderBullets, setInvaderBullets] = useState<InvaderBulletModel[]>(
+    []
+  );
   const [moveCondition, setMoveCondition] = useState<MoveCondition>({
     id: 0,
     dir: Direction.RIGHT,
@@ -50,6 +55,10 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
     y: 5,
   };
   const playerBulletSize = {
+    x: 0.3,
+    y: 3,
+  };
+  const invaderBulletSize = {
     x: 0.3,
     y: 3,
   };
@@ -153,6 +162,50 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
     };
   }, [moveInvaders]);
 
+  const updateInvaderBullet = useCallback(() => {
+    setInvaderBullets((prevInvaderBullets) => {
+      const updatedBullets = prevInvaderBullets
+        .filter((bullet) => bullet.pos.y + bullet.size.y + 2 < grid.y)
+        .map((bullet) => {
+          return {
+            ...bullet,
+            pos: {
+              ...bullet.pos,
+              y: bullet.pos.y + 2,
+            },
+          };
+        });
+
+      if (Math.random() >= 0.95) {
+        const validInvaders = invaders
+          .map((rows) => rows[rows.length - 1])
+          .filter((invader) => invader !== undefined);
+
+        if (validInvaders.length > 0) {
+          const randomIndex = Math.floor(Math.random() * validInvaders.length);
+          const { pos, size } = validInvaders[randomIndex];
+          const x = pos.x + size.x / 2 - invaderBulletSize.x / 2;
+          const y = pos.y + size.y;
+
+          updatedBullets.push({
+            id: uuidv4(),
+            pos: { x, y },
+            size: invaderBulletSize,
+          });
+        }
+      }
+      return updatedBullets;
+    });
+  }, [invaders]);
+
+  useEffect(() => {
+    const timer = setInterval(updateInvaderBullet, 50);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [updateInvaderBullet]);
+
   const isCollision = ({
     rectPos,
     rectSize,
@@ -234,6 +287,7 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
         setIsFiring={setPlayerBulletIsFiring}
       />
       <Invaders invaders={invaders} />
+      <InvaderBullets bullets={invaderBullets} />
     </InvaderGameContext.Provider>
   );
 };
