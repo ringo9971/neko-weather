@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Dispatch,
-  SetStateAction,
-  memo,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, memo, useContext, useEffect } from 'react';
 
 import { InvaderGameContext } from '../../lib/contexts';
 

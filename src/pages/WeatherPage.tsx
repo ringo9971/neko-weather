@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
-import { memo, useEffect, useLayoutEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
