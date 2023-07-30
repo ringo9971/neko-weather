@@ -79,8 +79,8 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
     if (playerBulletPos.x < 0) {
       return;
     }
-    const updatedInvaders = invaders.map((column) => {
-      const columns = column.map((invader) => {
+    const updatedInvaders = invaders.map((rows) => {
+      const updatedRows = rows.map((invader) => {
         if (
           isCollision({
             rectPos: playerBulletPos,
@@ -93,7 +93,9 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
         }
         return invader;
       });
-      return columns.filter((invader) => invader !== null) as InvaderModel[];
+      return updatedRows.filter(
+        (invader) => invader !== null
+      ) as InvaderModel[];
     });
 
     if (JSON.stringify(updatedInvaders) !== JSON.stringify(invaders)) {

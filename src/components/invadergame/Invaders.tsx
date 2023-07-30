@@ -22,8 +22,8 @@ interface InvadersProps {
 const Invaders = (props: InvadersProps): JSX.Element => {
   return (
     <>
-      {props.invaders.map((columns: InvaderModel[]) =>
-        columns.map((invader: InvaderModel) => (
+      {props.invaders.map((rows: InvaderModel[]) =>
+        rows.map((invader: InvaderModel) => (
           <Invader key={invader.id} pos={invader.pos} size={invader.size} />
         ))
       )}
