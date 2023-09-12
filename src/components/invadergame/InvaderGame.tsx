@@ -62,7 +62,7 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
     x: 0.3,
     y: 3,
   };
-
+  const colors = ['aka', 'midori', 'ao', 'murasaki'];
   useEffect(() => {
     const initialInvaders = [];
     for (let i = 0; i < 11; i++) {
@@ -71,7 +71,12 @@ const InvaderGame = ({ modalDimensions }: InvaderGameProps): JSX.Element => {
         const id = (3 - j) * 11 + i;
         const x = 25 + i * 5;
         const y = 10 + j * 10;
-        initialInvaders[i].push({ id, pos: { x, y }, size: { x: 5, y: 5 } });
+        initialInvaders[i].push({
+          id,
+          color: colors[j],
+          pos: { x, y },
+          size: { x: 5, y: 5 },
+        });
       }
     }
     setInvaders(initialInvaders);

@@ -4,6 +4,7 @@ import { memo, useContext } from 'react';
 import { InvaderGameContext } from '../../lib/contexts';
 
 interface InvaderProps {
+  color: string;
   pos: {
     x: number;
     y: number;
@@ -19,7 +20,7 @@ const Invader = (props: InvaderProps): JSX.Element => {
 
   return (
     <img
-      src="/kaminari.png"
+      src={`/kaminari_${props.color}.png`}
       alt="kaminari"
       style={{
         position: 'absolute',

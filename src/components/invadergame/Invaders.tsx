@@ -5,6 +5,7 @@ import Invader from './Invader';
 
 export interface InvaderModel {
   id: number;
+  color: string;
   pos: {
     x: number;
     y: number;
@@ -24,7 +25,12 @@ const Invaders = (props: InvadersProps): JSX.Element => {
     <>
       {props.invaders.map((rows: InvaderModel[]) =>
         rows.map((invader: InvaderModel) => (
-          <Invader key={invader.id} pos={invader.pos} size={invader.size} />
+          <Invader
+            key={invader.id}
+            color={invader.color}
+            pos={invader.pos}
+            size={invader.size}
+          />
         ))
       )}
     </>
