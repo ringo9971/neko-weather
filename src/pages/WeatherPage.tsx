@@ -1,6 +1,13 @@
-import { Box, Button, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from '@mui/material';
 import React from 'react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
@@ -8,6 +15,7 @@ import { getWeather } from '../api/mock/getWeather';
 import CatMayo from '../components/CatMayo';
 import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
+import { CityListContext, cityConfig } from '../lib/contexts';
 
 const customStyles = {
   content: {
@@ -21,6 +29,7 @@ const customStyles = {
 
 export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
+  const [filteredCities, setFilteredCities] = useState<cityConfig[]>([]);
   const [text, setText] = useState<string>('');
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [modalDimensions, setModalDimensions] = useState({
@@ -28,6 +37,7 @@ export const WeatherPage = (): JSX.Element => {
     height: 0,
   });
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const { cities } = useContext(CityListContext);
 
   const easterEgg = () => {
     setModalIsOpen(true);
@@ -37,16 +47,18 @@ export const WeatherPage = (): JSX.Element => {
     setModalIsOpen(false);
   };
 
-  const handleAddCity = () => {
-    if (text.trim() === '') {
+  const handleAddCity = (cityName: string) => {
+    if (cityName.trim() === '') {
       return;
     }
-    if (cityNames.every((cityName) => cityName !== text)) {
-      setCityNames([...cityNames, text]);
+    if (!cities.some((c) => c.name === cityName)) {
+      setErrorMessage(`「${cityName}」は登録できません。`);
+    } else if (cityNames.some((name) => name === cityName)) {
+      setErrorMessage(`「${cityName}」は登録されています。`);
+    } else {
+      setCityNames([...cityNames, cityName]);
       setText('');
       setErrorMessage('');
-    } else {
-      setErrorMessage(`「${text}」は登録されています。`);
     }
   };
 
@@ -60,10 +72,15 @@ export const WeatherPage = (): JSX.Element => {
     }
   };
 
+  const getFromLocalStorage = (key: string) => {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  };
+
   useEffect(() => {
-    const storedCityNames = localStorage.getItem('cityNames');
+    const storedCityNames = getFromLocalStorage('cityNames');
     if (storedCityNames !== null) {
-      setCityNames(JSON.parse(storedCityNames));
+      setCityNames(storedCityNames);
     }
   }, []);
 
@@ -80,34 +97,74 @@ export const WeatherPage = (): JSX.Element => {
     };
   }, []);
 
+  useEffect(() => {
+    if (text === '') {
+      setFilteredCities([]);
+      return;
+    }
+    const filtered = cities
+      .filter(
+        (city) => city.name.includes(text) || city.hurigana.includes(text)
+      )
+      .slice(0, 5);
+    setFilteredCities(filtered);
+  }, [text]);
+
+  const renderFilteredCities = () => {
+    if (filteredCities.length === 0) {
+      return null;
+    }
+    return (
+      <List>
+        {filteredCities
+          .filter(
+            (city) => !cityNames.some((cityName) => cityName === city.name)
+          )
+          .map((city) => (
+            <ListItem
+              button
+              key={city.name}
+              onClick={() => handleAddCity(city.name)}
+            >
+              <ListItemText primary={`${city.name}（${city.prefecture}）`} />
+            </ListItem>
+          ))}
+      </List>
+    );
+  };
+
   return (
     <>
       <Box
         display="flex"
-        alignItems="flex-start"
+        alignItems="center"
+        flexDirection="column"
         justifyContent="center"
         pt={1}
       >
-        <TextField
-          placeholder="都市名"
-          size="small"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.keyCode === 13) {
-              handleAddCity();
-            }
-          }}
-          error={!!errorMessage}
-          helperText={errorMessage !== '' ? errorMessage : ' '}
-        />
-        <Button
-          variant="contained"
-          onClick={handleAddCity}
-          sx={{ marginLeft: '8px' }}
-        >
-          追加
-        </Button>
+        <Box>
+          <TextField
+            placeholder="都市名"
+            size="small"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.keyCode === 13) {
+                handleAddCity(text);
+              }
+            }}
+            error={!!errorMessage}
+            helperText={errorMessage !== '' ? errorMessage : ' '}
+          />
+          <Button
+            variant="contained"
+            onClick={() => handleAddCity(text)}
+            sx={{ marginLeft: '8px' }}
+          >
+            追加
+          </Button>
+        </Box>
+        <Box>{renderFilteredCities()}</Box>
       </Box>
 
       <Konami action={easterEgg} timeout={50}></Konami>
