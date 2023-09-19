@@ -11,7 +11,7 @@ import { memo, useContext, useEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
 
-import { getWeather } from '../api/mock/getWeather';
+import { getWeather } from '../api/getWeather';
 import CatMayo from '../components/CatMayo';
 import ThreeDayWeatherForecast, {
   WeatherCardProps,
