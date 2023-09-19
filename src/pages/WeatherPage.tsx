@@ -64,6 +64,7 @@ export const WeatherPage = (): JSX.Element => {
       setErrorMessage(`「${cityName}」は登録されています。`);
     } else {
       setCityNames([...cityNames, cityName]);
+      fetchWeatherData(cityName);
       setText('');
       setErrorMessage('');
     }
@@ -92,19 +93,22 @@ export const WeatherPage = (): JSX.Element => {
     });
   };
 
+  const fetchWeatherData = async (cityName: string) => {
+    const id = cities.find((city) => city.name === cityName)?.id;
+    if (id !== undefined) {
+      const data = await getWeather(id);
+      addWeatherMap(cityName, data);
+    }
+  };
+
   useEffect(() => {
     const storedCityNames = getFromLocalStorage('cityNames');
     if (storedCityNames !== null) {
       setCityNames(storedCityNames);
 
-      const fetchData = async () => {
-        for (const cityName of storedCityNames) {
-          const data = await getWeather(cityName);
-          addWeatherMap(cityName, data);
-        }
-      };
-
-      fetchData();
+      for (const cityName of storedCityNames) {
+        fetchWeatherData(cityName);
+      }
     }
   }, []);
 
