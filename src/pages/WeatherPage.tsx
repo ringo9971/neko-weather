@@ -13,7 +13,9 @@ import Modal from 'react-modal';
 
 import { getWeather } from '../api/mock/getWeather';
 import CatMayo from '../components/CatMayo';
-import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
+import ThreeDayWeatherForecast, {
+  WeatherCardProps,
+} from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
 import { CityListContext, cityConfig } from '../lib/contexts';
 
@@ -31,12 +33,17 @@ export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [filteredCities, setFilteredCities] = useState<cityConfig[]>([]);
   const [text, setText] = useState<string>('');
+  const [weatherMap, setWeatherMap] = useState<Map<string, WeatherCardProps>>(
+    new Map<string, WeatherCardProps>()
+  );
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [modalDimensions, setModalDimensions] = useState({
     width: 0,
     height: 0,
   });
-  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const { cities } = useContext(CityListContext);
 
   const easterEgg = () => {
@@ -77,10 +84,27 @@ export const WeatherPage = (): JSX.Element => {
     return value ? JSON.parse(value) : null;
   };
 
+  const addWeatherMap = (cityName: string, weatherData: WeatherCardProps) => {
+    setWeatherMap((prevWeatherMap) => {
+      const newWeatherMap = new Map(prevWeatherMap);
+      newWeatherMap.set(cityName, weatherData);
+      return newWeatherMap;
+    });
+  };
+
   useEffect(() => {
     const storedCityNames = getFromLocalStorage('cityNames');
     if (storedCityNames !== null) {
       setCityNames(storedCityNames);
+
+      const fetchData = async () => {
+        for (const cityName of storedCityNames) {
+          const data = await getWeather(cityName);
+          addWeatherMap(cityName, data);
+        }
+      };
+
+      fetchData();
     }
   }, []);
 
@@ -177,9 +201,16 @@ export const WeatherPage = (): JSX.Element => {
         <InvaderGame modalDimensions={modalDimensions} />
       </Modal>
 
-      {cityNames.map((cityName) => (
-        <ThreeDayWeatherForecast {...getWeather(cityName)} key={cityName} />
-      ))}
+      {cityNames.map((cityName) => {
+        const weatherData = weatherMap.get(cityName);
+        return (
+          <ThreeDayWeatherForecast
+            {...(weatherData ?? {})}
+            cityName={cityName}
+            key={cityName}
+          />
+        );
+      })}
 
       <CatMayo />
     </>

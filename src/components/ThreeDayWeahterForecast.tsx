@@ -6,7 +6,7 @@ import { memo } from 'react';
 import WeatherCard from './WeatherCard';
 import { Weather } from './WeatherCard';
 
-type WeatherCardProps = {
+export type WeatherCardProps = {
   cityName: string;
   todayWeather?: Weather;
   tomorrowWeather?: Weather;
