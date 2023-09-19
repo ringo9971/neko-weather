@@ -8,9 +8,9 @@ import { Weather } from './WeatherCard';
 
 type WeatherCardProps = {
   cityName: string;
-  todayWeather: Weather;
-  tomorrowWeather: Weather;
-  dayAfterTomorrowWeather: Weather;
+  todayWeather?: Weather;
+  tomorrowWeather?: Weather;
+  dayAfterTomorrowWeather?: Weather;
 };
 
 const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
