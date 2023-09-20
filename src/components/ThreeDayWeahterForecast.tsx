@@ -1,6 +1,16 @@
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React from 'react';
+import React, { useState } from 'react';
 import { memo } from 'react';
 
 import WeatherCard from './WeatherCard';
@@ -15,6 +25,20 @@ export type WeatherCardProps = {
 };
 
 const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleDelete = () => {
+    if (props.onDelete) {
+      props.onDelete();
+    }
+    setOpen(false);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -24,11 +48,23 @@ const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
           </Grid>
           <Grid item style={{ marginLeft: 'auto' }}>
             {props.onDelete && (
-              <Button variant="contained" onClick={props.onDelete}>
+              <Button variant="contained" onClick={handleClickOpen}>
                 削除
               </Button>
             )}
           </Grid>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>確認</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                「{props.cityName}」を削除しますか？
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>キャンセル</Button>
+              <Button onClick={handleDelete}>削除</Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
 
         <Grid container style={{ display: 'flex' }}>
