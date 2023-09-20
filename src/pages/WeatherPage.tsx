@@ -1,3 +1,4 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -37,6 +38,7 @@ export const WeatherPage = (): JSX.Element => {
     new Map<string, WeatherCardProps>()
   );
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [activeDeleteButton, setActiveDeleteButton] = useState(false);
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [modalDimensions, setModalDimensions] = useState({
@@ -68,6 +70,13 @@ export const WeatherPage = (): JSX.Element => {
       setText('');
       setErrorMessage('');
     }
+  };
+
+  const handleDeleteCity = (cityName: string) => {
+    setCityNames((prevCityNames) => {
+      const newCityNames = prevCityNames.filter((name) => name !== cityName);
+      return newCityNames;
+    });
   };
 
   const updateModalDimensions = () => {
@@ -191,6 +200,19 @@ export const WeatherPage = (): JSX.Element => {
           >
             追加
           </Button>
+          <Button
+            variant="contained"
+            color={activeDeleteButton ? 'inherit' : 'primary'}
+            onClick={() =>
+              setActiveDeleteButton(
+                (prevActiveDeleteButton) => !prevActiveDeleteButton
+              )
+            }
+            sx={{ position: 'absolute', right: 0, marginRight: 2 }}
+            startIcon={<DeleteIcon />}
+          >
+            削除
+          </Button>
         </Box>
         <Box>{renderFilteredCities()}</Box>
       </Box>
@@ -211,6 +233,9 @@ export const WeatherPage = (): JSX.Element => {
           <ThreeDayWeatherForecast
             {...(weatherData ?? {})}
             cityName={cityName}
+            onDelete={
+              activeDeleteButton ? () => handleDeleteCity(cityName) : undefined
+            }
             key={cityName}
           />
         );
