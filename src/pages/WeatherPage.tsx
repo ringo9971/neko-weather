@@ -1,4 +1,4 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Button,
@@ -37,7 +37,7 @@ export const WeatherPage = (): JSX.Element => {
     new Map<string, WeatherResponse>()
   );
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [activeDeleteButton, setActiveDeleteButton] = useState(false);
+  const [activeEditButton, setActiveEditButton] = useState(false);
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [modalDimensions, setModalDimensions] = useState({
@@ -75,8 +75,34 @@ export const WeatherPage = (): JSX.Element => {
     setCityNames((prevCityNames) => {
       const newCityNames = prevCityNames.filter((name) => name !== cityName);
       if (newCityNames.length === 0) {
-        setActiveDeleteButton(false);
+        setActiveEditButton(false);
       }
+      return newCityNames;
+    });
+  };
+
+  const moveCityUp = (cityName: string) => {
+    setCityNames((prevCityNames) => {
+      const index = prevCityNames.indexOf(cityName);
+      if (index <= 0) {
+        return prevCityNames;
+      }
+      const newCityNames = [...prevCityNames];
+      newCityNames[index] = prevCityNames[index - 1];
+      newCityNames[index - 1] = cityName;
+      return newCityNames;
+    });
+  };
+
+  const moveCityDown = (cityName: string) => {
+    setCityNames((prevCityNames) => {
+      const index = prevCityNames.indexOf(cityName);
+      if (index < 0 || prevCityNames.length - 1 <= index) {
+        return prevCityNames;
+      }
+      const newCityNames = [...prevCityNames];
+      newCityNames[index] = prevCityNames[index + 1];
+      newCityNames[index + 1] = cityName;
       return newCityNames;
     });
   };
@@ -205,16 +231,16 @@ export const WeatherPage = (): JSX.Element => {
           {cityNames.length > 0 && (
             <Button
               variant="contained"
-              color={activeDeleteButton ? 'inherit' : 'primary'}
+              color={activeEditButton ? 'inherit' : 'primary'}
               onClick={() =>
-                setActiveDeleteButton(
-                  (prevActiveDeleteButton) => !prevActiveDeleteButton
+                setActiveEditButton(
+                  (prevActiveEditButton) => !prevActiveEditButton
                 )
               }
               sx={{ position: 'absolute', right: 0, marginRight: 2 }}
-              startIcon={<DeleteIcon />}
+              startIcon={<EditIcon />}
             >
-              削除
+              編集
             </Button>
           )}
         </Box>
@@ -231,14 +257,24 @@ export const WeatherPage = (): JSX.Element => {
         <InvaderGame modalDimensions={modalDimensions} />
       </Modal>
 
-      {cityNames.map((cityName) => {
+      {cityNames.map((cityName, index) => {
         const weatherData = weatherMap.get(cityName);
         return (
           <ThreeDayWeatherForecast
             {...(weatherData ?? {})}
             cityName={cityName}
             onDelete={
-              activeDeleteButton ? () => handleDeleteCity(cityName) : undefined
+              activeEditButton ? () => handleDeleteCity(cityName) : undefined
+            }
+            onMoveUp={
+              activeEditButton && index !== 0
+                ? () => moveCityUp(cityName)
+                : undefined
+            }
+            onMoveDown={
+              activeEditButton && index !== cityNames.length - 1
+                ? () => moveCityDown(cityName)
+                : undefined
             }
             key={cityName}
           />

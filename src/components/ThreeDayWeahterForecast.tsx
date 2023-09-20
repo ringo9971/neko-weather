@@ -1,3 +1,6 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {
   Button,
   Card,
@@ -34,6 +37,8 @@ export type ThreeDayWeatherCardProps = {
   };
   location?: WeatherLocation;
   onDelete?: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 };
 
 const ThreeDayWeahterForecast = (
@@ -53,6 +58,17 @@ const ThreeDayWeahterForecast = (
     setOpen(false);
   };
 
+  const handleMoveUp = () => {
+    if (props.onMoveUp) {
+      props.onMoveUp();
+    }
+  };
+  const handleMoveDown = () => {
+    if (props.onMoveDown) {
+      props.onMoveDown();
+    }
+  };
+
   return (
     <Card>
       <CardContent>
@@ -62,9 +78,28 @@ const ThreeDayWeahterForecast = (
           </Grid>
           <Grid item style={{ marginLeft: 'auto' }}>
             {props.onDelete && (
-              <Button variant="contained" onClick={handleClickOpen}>
-                削除
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  onClick={handleClickOpen}
+                  sx={{ marginRight: 1 }}
+                  startIcon={<DeleteIcon />}
+                >
+                  削除
+                </Button>
+                <Button
+                  variant="contained"
+                  color={props.onMoveUp ? 'primary' : 'inherit'}
+                  onClick={handleMoveUp}
+                  startIcon={<KeyboardArrowUpIcon />}
+                />
+                <Button
+                  variant="contained"
+                  color={props.onMoveDown ? 'primary' : 'inherit'}
+                  onClick={handleMoveDown}
+                  startIcon={<KeyboardArrowDownIcon />}
+                />
+              </>
             )}
           </Grid>
           <Dialog open={open} onClose={handleClose}>
