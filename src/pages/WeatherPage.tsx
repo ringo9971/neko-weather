@@ -75,6 +75,9 @@ export const WeatherPage = (): JSX.Element => {
   const handleDeleteCity = (cityName: string) => {
     setCityNames((prevCityNames) => {
       const newCityNames = prevCityNames.filter((name) => name !== cityName);
+      if (newCityNames.length === 0) {
+        setActiveDeleteButton(false);
+      }
       return newCityNames;
     });
   };
@@ -200,19 +203,21 @@ export const WeatherPage = (): JSX.Element => {
           >
             追加
           </Button>
-          <Button
-            variant="contained"
-            color={activeDeleteButton ? 'inherit' : 'primary'}
-            onClick={() =>
-              setActiveDeleteButton(
-                (prevActiveDeleteButton) => !prevActiveDeleteButton
-              )
-            }
-            sx={{ position: 'absolute', right: 0, marginRight: 2 }}
-            startIcon={<DeleteIcon />}
-          >
-            削除
-          </Button>
+          {cityNames.length > 0 && (
+            <Button
+              variant="contained"
+              color={activeDeleteButton ? 'inherit' : 'primary'}
+              onClick={() =>
+                setActiveDeleteButton(
+                  (prevActiveDeleteButton) => !prevActiveDeleteButton
+                )
+              }
+              sx={{ position: 'absolute', right: 0, marginRight: 2 }}
+              startIcon={<DeleteIcon />}
+            >
+              削除
+            </Button>
+          )}
         </Box>
         <Box>{renderFilteredCities()}</Box>
       </Box>
