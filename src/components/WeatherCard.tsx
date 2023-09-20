@@ -1,16 +1,25 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 import { memo } from 'react';
+import {
+  WeatherForecastChanceOfRain,
+  WeatherForecastDetail,
+  WeatherForecastTemperature,
+} from 'src/api/types';
 
 import { Condition } from '../enums';
 
-export type Weather = {
-  temperature?: number;
-  humidity?: number;
-  conditions?: Condition;
+export type WeatherCardProps = {
+  date?: string;
+  dateLabel?: string;
+  telop?: string;
+  condition?: Condition;
+  detail?: WeatherForecastDetail;
+  temperature?: WeatherForecastTemperature;
+  chanceOfRain?: WeatherForecastChanceOfRain;
 };
 
-const WeatherCard = (props: Weather): JSX.Element => {
+const WeatherCard = (props: WeatherCardProps): JSX.Element => {
   const getWeatherImage = (weather: Condition | undefined) => {
     const imagePaths = {
       sunny: '/sunny.png',
@@ -27,13 +36,10 @@ const WeatherCard = (props: Weather): JSX.Element => {
 
   return (
     <>
-      {getWeatherImage(props.conditions)}
+      {getWeatherImage(props.condition)}
       <Typography variant="h4" style={{ textAlign: 'center' }}>
-        気温: {props.temperature ?? '?'}℃
-      </Typography>
-
-      <Typography variant="h4" style={{ textAlign: 'center' }}>
-        温度: {props.humidity ?? '?'} %
+        気温: {props.temperature?.min.celsius ?? '?'}/
+        {props.temperature?.max.celsius ?? '?'}℃
       </Typography>
     </>
   );

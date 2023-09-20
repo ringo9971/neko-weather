@@ -12,19 +12,33 @@ import {
 import Grid from '@mui/material/Grid';
 import React, { useState } from 'react';
 import { memo } from 'react';
+import {
+  WeatherDescription,
+  WeatherForecast,
+  WeatherLocation,
+} from 'src/api/types';
 
 import WeatherCard from './WeatherCard';
-import { Weather } from './WeatherCard';
 
-export type WeatherCardProps = {
+export type ThreeDayWeatherCardProps = {
   cityName: string;
-  todayWeather?: Weather;
-  tomorrowWeather?: Weather;
-  dayAfterTomorrowWeather?: Weather;
+  publicTime?: string;
+  publicTimeFormatted?: string;
+  publishingOffice?: string;
+  title?: string;
+  description?: WeatherDescription;
+  forecasts?: {
+    today: WeatherForecast;
+    tomorrow: WeatherForecast;
+    dayAfterTomorrow: WeatherForecast;
+  };
+  location?: WeatherLocation;
   onDelete?: () => void;
 };
 
-const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
+const ThreeDayWeahterForecast = (
+  props: ThreeDayWeatherCardProps
+): JSX.Element => {
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -73,7 +87,7 @@ const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
             xs={4}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <WeatherCard {...props.todayWeather} />
+            <WeatherCard {...props.forecasts?.today} />
           </Grid>
 
           <Grid
@@ -81,7 +95,7 @@ const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
             xs={4}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <WeatherCard {...props.tomorrowWeather} />
+            <WeatherCard {...props.forecasts?.tomorrow} />
           </Grid>
 
           <Grid
@@ -89,7 +103,7 @@ const ThreeDayWeahterForecast = (props: WeatherCardProps): JSX.Element => {
             xs={4}
             style={{ display: 'flex', flexDirection: 'column' }}
           >
-            <WeatherCard {...props.dayAfterTomorrowWeather} />
+            <WeatherCard {...props.forecasts?.dayAfterTomorrow} />
           </Grid>
         </Grid>
       </CardContent>

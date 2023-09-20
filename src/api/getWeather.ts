@@ -1,6 +1,5 @@
-import { WeatherCardProps } from 'src/components/ThreeDayWeahterForecast';
-
 import { Condition } from '../enums';
+import { WeatherResponse } from './types';
 
 class RequestQueue<T> {
   private concurrency: number;
@@ -67,13 +66,13 @@ const telopToCondition = (telop: string) => {
   }
 };
 
-const weatherQueue = new RequestQueue<WeatherCardProps>(1);
+const weatherQueue = new RequestQueue<WeatherResponse>(1);
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export const getWeather = async (id: string): Promise<WeatherCardProps> => {
+export const getWeather = async (id: string): Promise<WeatherResponse> => {
   const storedWeatherData = localStorage.getItem(`weather_${id}`);
 
   if (storedWeatherData) {
@@ -86,7 +85,7 @@ export const getWeather = async (id: string): Promise<WeatherCardProps> => {
   }
 
   const weatherData = await weatherQueue.add(
-    async (): Promise<WeatherCardProps> => {
+    async (): Promise<WeatherResponse> => {
       const response = await fetch(
         `https://weather.tsukumijima.net/api/forecast/city/${id}`
       );
@@ -95,33 +94,40 @@ export const getWeather = async (id: string): Promise<WeatherCardProps> => {
       }
       const jsonData = await response.json();
 
-      const weatherData: WeatherCardProps = {
-        cityName: jsonData.location.city,
-        todayWeather: undefined,
-        tomorrowWeather: undefined,
-        dayAfterTomorrowWeather: undefined,
-      };
-
+      let today, tomorrow, dayAfterTomorrow;
       for (const forecast of jsonData.forecasts) {
-        const conditions = telopToCondition(forecast.telop);
-        const weather = {
-          temperature: forecast.temperature.max.celsius,
-          conditions,
+        const newForecast = {
+          ...forecast,
+          condition: telopToCondition(forecast.telop),
         };
         switch (forecast.dateLabel) {
           case '今日':
-            weatherData.todayWeather = weather;
+            today = newForecast;
             break;
           case '明日':
-            weatherData.tomorrowWeather = weather;
+            tomorrow = newForecast;
             break;
           case '明後日':
-            weatherData.dayAfterTomorrowWeather = weather;
+            dayAfterTomorrow = newForecast;
             break;
           default:
             break;
         }
       }
+
+      const weatherData: WeatherResponse = {
+        publicTime: jsonData.publicTime,
+        publicTimeFormatted: jsonData.publicTimeFormatted,
+        publishingOffice: jsonData.publishingOffice,
+        title: jsonData.title,
+        description: jsonData.description,
+        forecasts: {
+          today,
+          tomorrow,
+          dayAfterTomorrow,
+        },
+        location: jsonData.location,
+      };
 
       await sleep(1000);
       return weatherData;

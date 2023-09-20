@@ -11,12 +11,11 @@ import React from 'react';
 import { memo, useContext, useEffect, useState } from 'react';
 import Konami from 'react-konami-code';
 import Modal from 'react-modal';
+import { WeatherResponse } from 'src/api/types';
 
 import { getWeather } from '../api/getWeather';
 import CatMayo from '../components/CatMayo';
-import ThreeDayWeatherForecast, {
-  WeatherCardProps,
-} from '../components/ThreeDayWeahterForecast';
+import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
 import { CityListContext, cityConfig } from '../lib/contexts';
 
@@ -34,8 +33,8 @@ export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [filteredCities, setFilteredCities] = useState<cityConfig[]>([]);
   const [text, setText] = useState<string>('');
-  const [weatherMap, setWeatherMap] = useState<Map<string, WeatherCardProps>>(
-    new Map<string, WeatherCardProps>()
+  const [weatherMap, setWeatherMap] = useState<Map<string, WeatherResponse>>(
+    new Map<string, WeatherResponse>()
   );
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [activeDeleteButton, setActiveDeleteButton] = useState(false);
@@ -97,7 +96,7 @@ export const WeatherPage = (): JSX.Element => {
     return value ? JSON.parse(value) : null;
   };
 
-  const addWeatherMap = (cityName: string, weatherData: WeatherCardProps) => {
+  const addWeatherMap = (cityName: string, weatherData: WeatherResponse) => {
     setWeatherMap((prevWeatherMap) => {
       const newWeatherMap = new Map(prevWeatherMap);
       newWeatherMap.set(cityName, weatherData);
