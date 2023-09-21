@@ -152,7 +152,11 @@ const ThreeDayWeahterForecast = (
                   isDetilVisible &&
                   detailForecast &&
                   detailForecast.dateLabel === label
-                    ? { backgroundColor: 'lightcyan' }
+                    ? {
+                        backgroundColor: 'lightcyan',
+                        border: '1px solid lightgray',
+                        borderRadius: 5,
+                      }
                     : {}
                 }
               >
