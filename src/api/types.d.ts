@@ -3,6 +3,12 @@ export interface WeatherDescription {
   text: string;
 }
 
+interface WeatherForecastCondition {
+  main: Condition;
+  later: Condition;
+  sometimes: Condition;
+}
+
 interface WeatherForecastDetail {
   weather: string;
   wind: string;
@@ -30,7 +36,7 @@ export interface WeatherForecast {
   date: string;
   dateLabel: string;
   telop: string;
-  condition: Condition;
+  condition: WeatherForecastCondition;
   detail: WeatherForecastDetail;
   temperature: WeatherForecastTemperature;
   chanceOfRain: WeatherForecastChanceOfRain;

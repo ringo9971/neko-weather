@@ -56,14 +56,25 @@ class RequestQueue<T> {
   }
 }
 
-const telopToCondition = (telop: string) => {
-  if (telop.startsWith('晴')) {
-    return Condition.Sunny;
-  } else if (telop.startsWith('曇')) {
-    return Condition.Cloudy;
-  } else if (telop.startsWith('雨')) {
-    return Condition.Rainy;
+const telopToCondition = (telop: string, regex: RegExp) => {
+  const match = regex.exec(telop);
+  if (match) {
+    const a = match[0];
+    if (a.endsWith('晴')) {
+      return Condition.Sunny;
+    } else if (a.endsWith('曇')) {
+      return Condition.Cloudy;
+    } else if (a.endsWith('雨')) {
+      return Condition.Rainy;
+    }
   }
+};
+
+const telopToForecastCondition = (telop: string) => {
+  const main = telopToCondition(telop, /./);
+  const later = telopToCondition(telop, /のち./);
+  const sometimes = telopToCondition(telop, /時々./);
+  return { main, later, sometimes };
 };
 
 const calculateChanceOfRain = (chanceOfRain: {
@@ -126,7 +137,7 @@ export const getWeather = async (id: string): Promise<WeatherResponse> => {
         const average = calculateChanceOfRain(forecast.chanceOfRain);
         const newForecast = {
           ...forecast,
-          condition: telopToCondition(forecast.telop),
+          condition: telopToForecastCondition(forecast.telop),
           chanceOfRain: {
             ...forecast.chanceOfRain,
             average,
