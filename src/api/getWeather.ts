@@ -66,6 +66,33 @@ const telopToCondition = (telop: string) => {
   }
 };
 
+const calculateChanceOfRain = (chanceOfRain: {
+  T00_06: string;
+  T06_12: string;
+  T12_18: string;
+  T18_24: string;
+}) => {
+  const regex = /\d+/;
+  const chances: number[] = [];
+
+  for (const key in chanceOfRain) {
+    if (Object.prototype.hasOwnProperty.call(chanceOfRain, key)) {
+      const chanceString = chanceOfRain[key as keyof typeof chanceOfRain];
+      const match = regex.exec(chanceString);
+      if (match) {
+        chances.push(Number(match[0]));
+      }
+    }
+  }
+
+  if (chances.length === 0) {
+    return '-';
+  }
+  const average =
+    chances.reduce((sum, chance) => sum + chance, 0) / chances.length;
+  return average.toFixed(0);
+};
+
 const weatherQueue = new RequestQueue<WeatherResponse>(1);
 
 async function sleep(ms: number) {
@@ -96,9 +123,14 @@ export const getWeather = async (id: string): Promise<WeatherResponse> => {
 
       let today, tomorrow, dayAfterTomorrow;
       for (const forecast of jsonData.forecasts) {
+        const average = calculateChanceOfRain(forecast.chanceOfRain);
         const newForecast = {
           ...forecast,
           condition: telopToCondition(forecast.telop),
+          chanceOfRain: {
+            ...forecast.chanceOfRain,
+            average,
+          },
         };
         switch (forecast.dateLabel) {
           case '今日':

@@ -19,6 +19,7 @@ interface WeatherForecastTemperature {
   };
 }
 interface WeatherForecastChanceOfRain {
+  average: string;
   T00_06: string;
   T06_12: string;
   T12_18: string;
