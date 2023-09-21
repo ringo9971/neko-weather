@@ -1,8 +1,10 @@
+import ReplyIcon from '@mui/icons-material/Reply';
 import { Typography } from '@mui/material';
 import React from 'react';
 import { memo } from 'react';
 import {
   WeatherForecastChanceOfRain,
+  WeatherForecastCondition,
   WeatherForecastDetail,
   WeatherForecastTemperature,
 } from 'src/api/types';
@@ -13,24 +15,55 @@ export type WeatherCardProps = {
   date?: string;
   dateLabel?: string;
   telop?: string;
-  condition?: Condition;
+  condition?: WeatherForecastCondition;
   detail?: WeatherForecastDetail;
   temperature?: WeatherForecastTemperature;
   chanceOfRain?: WeatherForecastChanceOfRain;
 };
 
+const imagePaths: Record<Condition, string> = {
+  sunny: '/sunny.png',
+  cloudy: '/cloudy.png',
+  rainy: '/rainy.png',
+};
+
 const WeatherCard = (props: WeatherCardProps): JSX.Element => {
-  const getWeatherImage = (weather: Condition | undefined) => {
-    const imagePaths = {
-      sunny: '/sunny.png',
-      cloudy: '/cloudy.png',
-      rainy: '/rainy.png',
+  const getWeatherImage = (weather: WeatherForecastCondition | undefined) => {
+    const style: React.CSSProperties = {
+      maxWidth: '60%',
+      height: 'auto',
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
     };
+
     return (
-      <img
-        src={weather ? imagePaths[weather] : '/cat.png'}
-        style={{ maxWidth: '100%', height: 'auto' }}
-      />
+      <div style={{ position: 'relative' }}>
+        <img
+          src={
+            weather?.main ? imagePaths[weather.main as Condition] : '/cat.png'
+          }
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
+        {weather?.sometimes && (
+          <img src={imagePaths[weather.sometimes as Condition]} style={style} />
+        )}
+        {weather?.later && (
+          <>
+            <img src={imagePaths[weather.later as Condition]} style={style} />
+            <ReplyIcon
+              sx={{
+                width: '30%',
+                height: 'auto',
+                position: 'absolute',
+                bottom: '10%',
+                right: '45%',
+                transform: 'scaleX(-1) scaleY(-1)',
+              }}
+            />
+          </>
+        )}
+      </div>
     );
   };
 

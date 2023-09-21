@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { memo } from 'react';
 import {
   WeatherForecastChanceOfRain,
+  WeatherForecastCondition,
   WeatherForecastDetail,
   WeatherForecastTemperature,
 } from 'src/api/types';
@@ -21,7 +22,7 @@ export type WeatherDetailCardProps = {
   date?: string;
   dateLabel?: string;
   telop?: string;
-  condition?: Condition;
+  condition?: WeatherForecastCondition;
   detail?: WeatherForecastDetail;
   temperature?: WeatherForecastTemperature;
   chanceOfRain?: WeatherForecastChanceOfRain;
