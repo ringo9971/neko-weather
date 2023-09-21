@@ -19,16 +19,6 @@ import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
 import { CityListContext, cityConfig } from '../lib/contexts';
 
-const customStyles = {
-  content: {
-    top: '10%',
-    left: '10%',
-    right: '10%',
-    bottom: '10%',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
-};
-
 export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [filteredCities, setFilteredCities] = useState<cityConfig[]>([]);
@@ -44,11 +34,13 @@ export const WeatherPage = (): JSX.Element => {
     width: 0,
     height: 0,
   });
+  const [customStyles, setCustomStyle] = useState({});
 
   const { cities } = useContext(CityListContext);
 
   const easterEgg = () => {
     setModalIsOpen(true);
+    updateModalDimensions();
   };
 
   const closeModal = () => {
@@ -108,13 +100,28 @@ export const WeatherPage = (): JSX.Element => {
   };
 
   const updateModalDimensions = () => {
-    const modalElement = document.querySelector('.ReactModal__Content');
-    if (modalElement) {
-      setModalDimensions({
-        width: modalElement.clientWidth,
-        height: modalElement.clientHeight,
-      });
-    }
+    const x = window.innerWidth;
+    const y = window.innerHeight;
+    const newX = Math.max(0, ((1 - (y * 0.9) / x) / 2) * 100);
+    const newY = Math.max(0, ((1 - x / (y * 0.9)) / 2) * 100);
+
+    setCustomStyle({
+      content: {
+        top: `${5 + newY}%`,
+        left: `${5 + newX}%`,
+        right: `${5 + newX}%`,
+        bottom: `${5 + newY}%`,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        overflow: 'hidden',
+      },
+    });
+
+    const width = (x * (90 - newX * 2)) / 100;
+    const height = (y * (90 - newY * 2)) / 100;
+    setModalDimensions({
+      width,
+      height,
+    });
   };
 
   const getFromLocalStorage = (key: string) => {
