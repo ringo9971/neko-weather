@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { memo } from 'react';
 import {
   WeatherDescription,
@@ -46,7 +46,7 @@ const ThreeDayWeahterForecast = (
   props: ThreeDayWeatherCardProps
 ): JSX.Element => {
   const [open, setOpen] = useState(false);
-  const [isDetilVisible, setIsDetailVisible] = useState(false);
+  const [isDetilVisible, setIsDetailVisible] = useState(true);
   const [detailForecast, setDetailForecast] = useState(props.forecasts?.today);
 
   const handleClickOpen = () => {
@@ -83,6 +83,10 @@ const ThreeDayWeahterForecast = (
       setIsDetailVisible((prevIsDetailVisible) => !prevIsDetailVisible);
     }
   };
+
+  useEffect(() => {
+    setDetailForecast(props.forecasts?.today);
+  }, [props.forecasts]);
 
   return (
     <Card>
