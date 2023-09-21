@@ -103,11 +103,11 @@ export const getWeather = async (id: string): Promise<WeatherResponse> => {
   const storedWeatherData = localStorage.getItem(`weather_${id}`);
 
   if (storedWeatherData) {
-    const { timestamp, data } = JSON.parse(storedWeatherData);
+    const { date, weather } = JSON.parse(storedWeatherData);
 
-    const currentTime = new Date().getTime();
-    if (currentTime - timestamp < 24 * 60 * 60 * 1000) {
-      return data;
+    const currentDate = new Date().toDateString();
+    if (date === currentDate) {
+      return weather;
     }
   }
 
@@ -166,10 +166,10 @@ export const getWeather = async (id: string): Promise<WeatherResponse> => {
     }
   );
 
-  const currentTime = new Date().getTime();
+  const currentDate = new Date().toDateString();
   const storedData = {
-    timestamp: currentTime,
-    data: weatherData,
+    date: currentDate,
+    weather: weatherData,
   };
   localStorage.setItem(`weather_${id}`, JSON.stringify(storedData));
 
