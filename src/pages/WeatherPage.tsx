@@ -176,7 +176,10 @@ export const WeatherPage = (): JSX.Element => {
     }
     const filtered = cities
       .filter(
-        (city) => city.name.includes(text) || city.hurigana.includes(text)
+        (city) =>
+          city.name.includes(text) ||
+          city.hurigana.includes(text) ||
+          city.prefecture.includes(text)
       )
       .slice(0, 5);
     setFilteredCities(filtered);
