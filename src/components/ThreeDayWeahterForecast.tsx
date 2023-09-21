@@ -22,6 +22,7 @@ import {
 } from 'src/api/types';
 
 import WeatherCard from './WeatherCard';
+import WeatherDetailCard from './WeatherDetailCard';
 
 export type ThreeDayWeatherCardProps = {
   cityName: string;
@@ -45,6 +46,9 @@ const ThreeDayWeahterForecast = (
   props: ThreeDayWeatherCardProps
 ): JSX.Element => {
   const [open, setOpen] = useState(false);
+  const [isDetilVisible, setIsDetailVisible] = useState(false);
+  const [detailForecast, setDetailForecast] = useState(props.forecasts?.today);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -66,6 +70,17 @@ const ThreeDayWeahterForecast = (
   const handleMoveDown = () => {
     if (props.onMoveDown) {
       props.onMoveDown();
+    }
+  };
+
+  const handleDetailClick = (forecast: WeatherForecast | undefined) => {
+    setDetailForecast(forecast);
+    if (
+      detailForecast &&
+      forecast &&
+      detailForecast.dateLabel === forecast.dateLabel
+    ) {
+      setIsDetailVisible((prevIsDetailVisible) => !prevIsDetailVisible);
     }
   };
 
@@ -117,31 +132,33 @@ const ThreeDayWeahterForecast = (
         </Grid>
 
         <Grid container style={{ display: 'flex' }}>
-          <Grid
-            item
-            xs={4}
-            style={{ display: 'flex', flexDirection: 'column' }}
-          >
-            <WeatherCard {...props.forecasts?.today} />
-          </Grid>
-
-          <Grid
-            item
-            xs={4}
-            style={{ display: 'flex', flexDirection: 'column' }}
-          >
-            <WeatherCard {...props.forecasts?.tomorrow} />
-          </Grid>
-
-          <Grid
-            item
-            xs={4}
-            style={{ display: 'flex', flexDirection: 'column' }}
-          >
-            <WeatherCard {...props.forecasts?.dayAfterTomorrow} />
-          </Grid>
+          {[
+            { label: '今日', forecast: props.forecasts?.today },
+            { label: '明日', forecast: props.forecasts?.tomorrow },
+            { label: '明後日', forecast: props.forecasts?.dayAfterTomorrow },
+          ].map(({ label, forecast }) => {
+            return (
+              <Grid
+                item
+                key={label}
+                xs={4}
+                style={{ display: 'flex', flexDirection: 'column' }}
+                onClick={() => handleDetailClick(forecast)}
+                sx={
+                  isDetilVisible &&
+                  detailForecast &&
+                  detailForecast.dateLabel === label
+                    ? { backgroundColor: 'lightcyan' }
+                    : {}
+                }
+              >
+                <WeatherCard {...forecast} />
+              </Grid>
+            );
+          })}
         </Grid>
       </CardContent>
+      {isDetilVisible && <WeatherDetailCard {...detailForecast} />}
     </Card>
   );
 };
