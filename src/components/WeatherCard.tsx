@@ -69,11 +69,19 @@ const WeatherCard = (props: WeatherCardProps): JSX.Element => {
 
   return (
     <>
+      <Typography variant="h4" style={{ textAlign: 'center' }}>
+        {props.dateLabel}
+      </Typography>
       {getWeatherImage(props.condition)}
       <Typography variant="h4" style={{ textAlign: 'center' }}>
         <span style={{ fontSize: 'smaller' }}>気温: </span>
-        {props.temperature?.min.celsius ?? '?'}/
-        {props.temperature?.max.celsius ?? '?'}
+        <span style={{ color: 'red' }}>
+          {props.temperature?.max.celsius ?? '?'}
+        </span>
+        <span style={{ fontSize: 'smaller' }}> ℃</span>/
+        <span style={{ color: 'blue' }}>
+          {props.temperature?.min.celsius ?? '?'}
+        </span>
         <span style={{ fontSize: 'smaller' }}> ℃</span>
       </Typography>
       <Typography variant="h4" style={{ textAlign: 'center' }}>
