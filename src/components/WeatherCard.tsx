@@ -38,8 +38,15 @@ const WeatherCard = (props: WeatherCardProps): JSX.Element => {
     <>
       {getWeatherImage(props.condition)}
       <Typography variant="h4" style={{ textAlign: 'center' }}>
-        気温: {props.temperature?.min.celsius ?? '?'}/
-        {props.temperature?.max.celsius ?? '?'}℃
+        <span style={{ fontSize: 'smaller' }}>気温: </span>
+        {props.temperature?.min.celsius ?? '?'}/
+        {props.temperature?.max.celsius ?? '?'}
+        <span style={{ fontSize: 'smaller' }}> ℃</span>
+      </Typography>
+      <Typography variant="h4" style={{ textAlign: 'center' }}>
+        <span style={{ fontSize: 'smaller' }}>降水確率: </span>
+        {props.chanceOfRain?.average ?? '?'}
+        <span style={{ fontSize: 'smaller' }}> %</span>
       </Typography>
     </>
   );
