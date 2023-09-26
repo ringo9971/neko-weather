@@ -209,7 +209,7 @@ export const WeatherPage = (): JSX.Element => {
       }))
       .filter(({ distance }) => distance <= 1)
       .sort((a, b) => a.distance - b.distance)
-      .slice(0, 5)
+      .slice(0, 20)
       .map(({ city }) => city);
     setFilteredCities(filtered);
   }, [text]);
@@ -219,7 +219,7 @@ export const WeatherPage = (): JSX.Element => {
       return null;
     }
     return (
-      <List>
+      <List style={{ overflowY: 'scroll', maxHeight: '250px' }}>
         {filteredCities
           .filter(
             (city) => !cityNames.some((cityName) => cityName === city.name)
