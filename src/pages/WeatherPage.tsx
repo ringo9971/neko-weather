@@ -19,6 +19,29 @@ import ThreeDayWeatherForecast from '../components/ThreeDayWeahterForecast';
 import InvaderGame from '../components/invadergame/InvaderGame';
 import { CityListContext, cityConfig } from '../lib/contexts';
 
+const getDitance = (s1: string, s2: string) => {
+  const len1 = s1.length;
+  const len2 = s2.length;
+
+  let dp1: number[] = [];
+  let dp2: number[] = [];
+  for (let i = 0; i <= len1; ++i) {
+    dp1[i] = i;
+  }
+  for (let i = 1; i <= len2; ++i) {
+    dp2[0] = i;
+    for (let j = 1; j <= len1; ++j) {
+      if (s1.charAt(j - 1) == s2.charAt(i - 1)) {
+        dp2[j] = dp1[j - 1] - 1;
+      } else {
+        dp2[j] = Math.min(dp1[j - 1] + 1, dp1[j] + 1, dp2[j - 1] + 1);
+      }
+    }
+    [dp1, dp2] = [dp2, dp1];
+  }
+  return dp1[len1];
+};
+
 export const WeatherPage = (): JSX.Element => {
   const [cityNames, setCityNames] = useState<string[]>([]);
   const [filteredCities, setFilteredCities] = useState<cityConfig[]>([]);
@@ -175,13 +198,19 @@ export const WeatherPage = (): JSX.Element => {
       return;
     }
     const filtered = cities
-      .filter(
-        (city) =>
-          city.name.includes(text) ||
-          city.hurigana.includes(text) ||
-          city.prefecture.includes(text)
-      )
-      .slice(0, 5);
+      .map((city) => ({
+        city,
+        distance: Math.min(
+          getDitance(city.name, text),
+          getDitance(city.hurigana, text),
+          getDitance(city.prefecture, text),
+          getDitance(city.prefectureHurigana, text)
+        ),
+      }))
+      .filter(({ distance }) => distance <= 1)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 5)
+      .map(({ city }) => city);
     setFilteredCities(filtered);
   }, [text]);
 
