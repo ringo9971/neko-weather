@@ -41,7 +41,9 @@ const WeatherCard = (props: WeatherCardProps): JSX.Element => {
       <div style={{ position: 'relative' }}>
         <img
           src={
-            weather?.main ? imagePaths[weather.main as Condition] : '/cat.png'
+            weather?.main
+              ? imagePaths[weather.main as Condition]
+              : '/cat_loading.gif'
           }
           style={{ maxWidth: '100%', height: 'auto' }}
         />
