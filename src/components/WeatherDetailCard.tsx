@@ -5,7 +5,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { memo } from 'react';
@@ -15,8 +14,6 @@ import {
   WeatherForecastDetail,
   WeatherForecastTemperature,
 } from 'src/api/types';
-
-import { Condition } from '../enums';
 
 export type WeatherDetailCardProps = {
   date?: string;
